@@ -5,44 +5,44 @@ pub mod Logs {
     use std::task::Context;
     use colored::Colorize;
 
-    #[derive(Clone, Copy)]
+    #[derive(Clone)]
     pub struct UtilsData {
         context: Option<&'static str>,
-        message: &'static str,
+        message: String,
         debug_status: Option<bool>
     }
 
     #[warn(non_snake_case)]
-    pub fn initLog(ctx: Option<&'static str>, msg: &'static str, debug: Option<bool>) -> UtilsData {
+    pub fn initLog(ctx: Option<&'static str>, msg: String, debug: Option<bool>) -> UtilsData {
 
         let mut utils: UtilsData = UtilsData {
             context: None,
-            message: "",
+            message: "".to_string(),
             debug_status: None,
         };
 
         if ctx != None && debug == None {
             utils = UtilsData {
                 context: ctx,
-                message: msg,
+                message: msg.to_string(),
                 debug_status: Some(false)
             };
         } else if ctx != None && debug != None  {
             utils = UtilsData {
                 context: ctx,
-                message: msg,
+                message: msg.to_string(),
                 debug_status: debug
             };
         } else if ctx == None && debug != None {
             utils = UtilsData {
                 context: Some(""),
-                message: msg,
+                message: msg.to_string(),
                 debug_status: debug
             };
         } else {
             utils = UtilsData {
                 context: Some(""),
-                message: msg,
+                message: msg.to_string(),
                 debug_status: Some(false)
             };
         }
