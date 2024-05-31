@@ -1,13 +1,45 @@
 mod utils;
+mod server;
 
+use std::io::{Read, Write};
+use std::convert::TryFrom;
+use std::io;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener, TcpStream};
 use crate::utils::Logs::UtilsData;
 
-fn handler(stream: TcpStream) {
+fn handler(mut stream: TcpStream) -> std::io::Result<()> {
+
+    let mut buffer = [0; 512];
     let user: SocketAddr = stream.local_addr().unwrap();
     let msgUser: String = format!("{} has connected successfully", user);
     let logs: UtilsData = utils::Logs::initLog(None, msgUser, None);
     utils::Logs::info(logs);
+
+    loop {
+
+        let bytes_read = stream.read(&mut buffer)?;
+
+        // Convert the buffer to a string slice
+        match std::str::from_utf8(&buffer[..bytes_read]) {
+            Ok(msg) => {
+                if msg == "ABC" {
+                    if let Err(e) = write_to_client(&mut stream, "OK".as_bytes()) {
+                        let logs = utils::Logs::initLog(None, format!("Failed to write to server: {}", e), None);
+                        utils::Logs::error(logs);
+                    }
+                } else {
+                    if let Err(e) = write_to_client(&mut stream, "Unknown packet".as_bytes()) {
+                        let logs = utils::Logs::initLog(None, format!("Failed to write to server: {}", e), None);
+                        utils::Logs::error(logs);
+                    }
+                }
+            }
+            Err(e) => {
+                let logs = utils::Logs::initLog(None, format!("Invalid UTF-8 sequence: {}", e), None);
+                utils::Logs::error(logs);
+            }
+        }
+    }
 }
 
 fn main() -> std::io::Result<()> {
@@ -26,4 +58,8 @@ fn main() -> std::io::Result<()> {
         handler(stream?);
     }
     Ok(())
+}
+
+fn write_to_client(stream: &mut impl Write, data: &[u8]) -> io::Result<()> {
+    stream.write_all(data)
 }
