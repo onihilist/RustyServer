@@ -1,0 +1,2 @@
+1. Ajouter les vérification des protocols dans le response
+2. FAIRE LE SENDER POUR ENVOYER LES MERDES DANS CHECKPROTOCOL !!!!

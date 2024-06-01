@@ -5,6 +5,9 @@ use std::io::{Read, Write};
 use std::convert::TryFrom;
 use std::io;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener, TcpStream};
+use crate::server::protocols::protocolData;
+use crate::server::response;
+use crate::server::response::responseData;
 use crate::utils::Logs::UtilsData;
 
 fn handler(mut stream: TcpStream) -> std::io::Result<()> {
@@ -19,20 +22,14 @@ fn handler(mut stream: TcpStream) -> std::io::Result<()> {
 
         let bytes_read = stream.read(&mut buffer)?;
 
-        // Convert the buffer to a string slice
         match std::str::from_utf8(&buffer[..bytes_read]) {
             Ok(msg) => {
-                if msg == "ABC" {
-                    if let Err(e) = write_to_client(&mut stream, "OK".as_bytes()) {
-                        let logs = utils::Logs::initLog(None, format!("Failed to write to server: {}", e), None);
-                        utils::Logs::error(logs);
-                    }
-                } else {
-                    if let Err(e) = write_to_client(&mut stream, "Unknown packet".as_bytes()) {
-                        let logs = utils::Logs::initLog(None, format!("Failed to write to server: {}", e), None);
-                        utils::Logs::error(logs);
-                    }
-                }
+
+                let protocolReceive: protocolData = server::protocols::createProtocol(msg.to_string());
+                let response: responseData = server::response::initResponseData(protocolReceive);
+
+                write_to_client(&mut stream, response).expect("TODO: panic message");
+
             }
             Err(e) => {
                 let logs = utils::Logs::initLog(None, format!("Invalid UTF-8 sequence: {}", e), None);
@@ -60,6 +57,14 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-fn write_to_client(stream: &mut impl Write, data: &[u8]) -> io::Result<()> {
-    stream.write_all(data)
+fn write_to_client(stream: &mut impl Write, data: responseData) -> io::Result<()> {
+    let (protocol_bytes, sender_bytes, receiver_bytes, data_bytes) = data.to_byte_slices();
+    let payload = server::protocols::concatenate_slices(
+        b"::",
+        protocol_bytes,
+        sender_bytes,
+        receiver_bytes,
+        data_bytes
+    );
+    stream.write_all(payload)
 }
