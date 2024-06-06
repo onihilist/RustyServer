@@ -1,7 +1,8 @@
-use colored::Colorize;
+use std::string::ToString;
 use crate::utils;
 use crate::utils::Logs::UtilsData;
 
+pub const PROTOCOL_DATA_SEP: &str = "::";
 pub const INIT_CONNECTION: &str = "INIT_CONNECTION";
 pub const REGISTER: &str =  "REGISTER";
 pub const LOGIN: &str = "LOGIN";
@@ -37,45 +38,65 @@ pub fn initProtocolData(protocol: String, sender: String, receiver: String, data
 }
 
 pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
+    let logs: UtilsData = utils::Logs::initLog(
+        None,
+        format!("Packet from {} -> {}{}{}{}{}{}{}",
+                protocol_data.sender,
+                protocol_data.protocol, PROTOCOL_DATA_SEP,
+                protocol_data.sender, PROTOCOL_DATA_SEP,
+                protocol_data.receiver, PROTOCOL_DATA_SEP,
+                protocol_data.data),
+        None);
 
-    let logs: UtilsData = utils::Logs::initLog(None,
-                                               format!("Packet from {} -> {}{}{}{}{}{}{}",
-                                                       protocol_data.sender,
-                                                       protocol_data.protocol,
-                                                       "::",
-                                                       protocol_data.sender,
-                                                       "::",
-                                                       protocol_data.receiver,
-                                                       "::",
-                                                       protocol_data.data
-                                               ),
-                                               None);
-    let errLog: UtilsData = utils::Logs::initLog(None, "Unknown protocol".to_string(), None);
-
-    match protocol_data.protocol.as_str() {
+    return match protocol_data.protocol.as_str() {
         INIT_CONNECTION => {
             utils::Logs::debug(logs);
-            return protocol_data
+            initProtocolData(
+                INIT_CONNECTION.to_string(),
+                "server".to_string(),
+                protocol_data.sender,
+                "CONNECTION OK.".to_string()
+            ) //
         },
         REGISTER => {
             utils::Logs::debug(logs);
-            return protocol_data
+            initProtocolData(
+                REGISTER.to_string(),
+                "server".to_string(),
+                protocol_data.sender,
+                "REGISTER OK.".to_string()
+            )
         },
         LOGIN => {
             utils::Logs::debug(logs);
-            return protocol_data
+            initProtocolData(
+                LOGIN.to_string(),
+                "server".to_string(),
+                protocol_data.sender,
+                "LOGIN OK.".to_string()
+            )
         },
         SEND => {
             utils::Logs::debug(logs);
-            return protocol_data
+            initProtocolData(
+                SEND.to_string(),
+                "server".to_string(),
+                protocol_data.sender,
+                "SEND OK.".to_string()
+            )
         },
         RECEIVE => {
             utils::Logs::debug(logs);
-            return protocol_data
+            initProtocolData(
+                RECEIVE.to_string(),
+                "server".to_string(),
+                protocol_data.sender,
+                "RECEIVE OK.".to_string()
+            )
         },
-        _=>{
-            utils::Logs::warning(errLog);
-            return initProtocolData(
+        _ => {
+            utils::Logs::warning(utils::Logs::initLog(None, "Unknown protocol".to_string(), None));
+            initProtocolData(
                 "PROTOCOL_NOT_EXIST".to_string(),
                 "server".to_string(),
                 "receiver".to_string(),
@@ -87,7 +108,6 @@ pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
 
 pub fn createProtocol(request: String) -> protocolData {
     let parts: Vec<&str> = request.split("::").collect();
-
     let newProtocol: protocolData = protocolData{
         protocol: parts[0].to_string(),
         sender:   parts[1].to_string(),
@@ -98,16 +118,16 @@ pub fn createProtocol(request: String) -> protocolData {
 }
 
 pub fn protocolParser(packet: protocolData) -> String {
-
     let splitter: String = "::".to_string();
-    let request = format!("{}{}{}{}{}{}{}",
-                          packet.protocol,
-                          splitter,
-                          packet.sender,
-                          splitter,
-                          packet.receiver,
-                          splitter,
-                          packet.data
+    let request = format!(
+        "{}{}{}{}{}{}{}",
+        packet.protocol,
+        splitter,
+        packet.sender,
+        splitter,
+        packet.receiver,
+        splitter,
+        packet.data
     );
     return request;
 }
@@ -122,7 +142,5 @@ pub fn concatenate_slices<'a>(separator: &[u8], slice1: &'a [u8], slice2: &'a [u
     result.extend_from_slice(slice3);
     result.extend_from_slice(separator);
     result.extend_from_slice(slice4);
-
     unsafe { std::slice::from_raw_parts(result.as_ptr(), total_length) }
-
 }
