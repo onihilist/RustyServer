@@ -5,7 +5,7 @@ use std::io::{Read, Write};
 use std::convert::TryFrom;
 use std::io;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener, TcpStream};
-use crate::server::protocols::protocolData;
+use crate::server::protocols::{ checkProtocol, protocolData };
 use crate::server::response;
 use crate::server::response::responseData;
 use crate::utils::Logs::UtilsData;
@@ -26,7 +26,7 @@ fn handler(mut stream: TcpStream) -> std::io::Result<()> {
             Ok(msg) => {
 
                 let protocolReceive: protocolData = server::protocols::createProtocol(msg.to_string());
-                let response: responseData = server::response::initResponseData(protocolReceive);
+                let response: responseData = server::response::initResponseData(checkProtocol(protocolReceive));
 
                 write_to_client(&mut stream, response).expect("TODO: panic message");
 
@@ -46,7 +46,7 @@ fn main() -> std::io::Result<()> {
     let port: u16 = 42000;
     let socket_addr = SocketAddr::from(SocketAddr::new(addr, port));
     let listener: TcpListener = TcpListener::bind(socket_addr)?;
-    let logs: UtilsData = utils::Logs::initLog(None, "Server is successfully started !".to_string(), None);
+    let logs: UtilsData = utils::Logs::initLog(None, "Server has successfully started !".to_string(), None);
     utils::Logs::success(logs);
     let logs: UtilsData = utils::Logs::initLog(None, "Listening for a connection...".to_string(), None);
     utils::Logs::info(logs);

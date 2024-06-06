@@ -9,7 +9,6 @@ use chrono::{
 };
 use std::time::{Instant};
 
-
 pub struct responseData{
     protocolData: protocolData,
     timeUTC: DateTime<Utc>,
@@ -28,37 +27,29 @@ impl responseData {
 }
 
 pub fn initResponseData(protocol_data: protocolData) -> responseData {
-
     let t0: Instant = Instant::now();
     let protocol: protocolData= checkProtocol(protocol_data);
 
     // CHECK TO-DO 1
-    if protocol.protocol == "INIT_CONNECTION" {
-
+    if protocol.protocol == crate::server::protocols::INIT_CONNECTION {
         let response = responseData {
             protocolData: protocol,
             timeUTC: Utc::now(),
             responseTime: t0.elapsed().as_millis() as u16
         };
-
         return response;
-
     } else {
-
         let payload: protocolData = initProtocolData(
             "PROTOCOL_NOT_EXIST".to_string(),
             "server".to_string(),
             "receiver".to_string(),
             "This protocol doesn't exist".to_string()
         );
-
         let response = responseData {
             protocolData: payload,
             timeUTC: Utc::now(),
             responseTime: t0.elapsed().as_millis() as u16
         };
-
         return response;
-
     }
 }

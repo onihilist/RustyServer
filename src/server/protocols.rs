@@ -2,6 +2,12 @@ use colored::Colorize;
 use crate::utils;
 use crate::utils::Logs::UtilsData;
 
+pub const INIT_CONNECTION: &str = "INIT_CONNECTION";
+pub const REGISTER: &str =  "REGISTER";
+pub const LOGIN: &str = "LOGIN";
+pub const SEND: &str = "SEND";
+pub const RECEIVE: &str = "RECEIVE";
+
 pub struct protocolData {
     pub protocol: String,
     pub sender: String,
@@ -47,23 +53,23 @@ pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
     let errLog: UtilsData = utils::Logs::initLog(None, "Unknown protocol".to_string(), None);
 
     match protocol_data.protocol.as_str() {
-        "INIT_CONNECTION"=>{
+        INIT_CONNECTION => {
             utils::Logs::debug(logs);
             return protocol_data
         },
-        "REGISTER"=>{
+        REGISTER => {
             utils::Logs::debug(logs);
             return protocol_data
         },
-        "LOGIN"=>{
+        LOGIN => {
             utils::Logs::debug(logs);
             return protocol_data
         },
-        "SEND"   =>{
+        SEND => {
             utils::Logs::debug(logs);
             return protocol_data
         },
-        "RECEIVE"=>{
+        RECEIVE => {
             utils::Logs::debug(logs);
             return protocol_data
         },
