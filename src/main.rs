@@ -1,5 +1,6 @@
 mod utils;
 mod server;
+mod database;
 
 use std::io::{Read, Write};
 use std::convert::TryFrom;
