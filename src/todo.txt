@@ -4,6 +4,7 @@
 3. Encrypté les données envoyées a la database
 4. Ajouter la possibilité de faire des groupes d'utilisateurs
 5. Ajouter une blacklist/whitelist
+6. Le serveur s'envoie lui même un message au lieu de l'envoyer au client
 ===============================
 
 
