@@ -48,61 +48,71 @@ pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
                 protocol_data.data),
         None);
 
-    return match protocol_data.protocol.as_str() {
-        INIT_CONNECTION => {
-            utils::Logs::debug(logs);
-            initProtocolData(
-                INIT_CONNECTION.to_string(),
-                "server".to_string(),
-                protocol_data.sender,
-                "CONNECTION OK.".to_string()
-            ) //
-        },
-        REGISTER => {
-            utils::Logs::debug(logs);
-            initProtocolData(
-                REGISTER.to_string(),
-                "server".to_string(),
-                protocol_data.sender,
-                "REGISTER OK.".to_string()
-            )
-        },
-        LOGIN => {
-            utils::Logs::debug(logs);
-            initProtocolData(
-                LOGIN.to_string(),
-                "server".to_string(),
-                protocol_data.sender,
-                "LOGIN OK.".to_string()
-            )
-        },
-        SEND => {
-            utils::Logs::debug(logs);
-            initProtocolData(
-                SEND.to_string(),
-                "server".to_string(),
-                protocol_data.sender,
-                "SEND OK.".to_string()
-            )
-        },
-        RECEIVE => {
-            utils::Logs::debug(logs);
-            initProtocolData(
-                RECEIVE.to_string(),
-                "server".to_string(),
-                protocol_data.sender,
-                "RECEIVE OK.".to_string()
-            )
-        },
-        _ => {
-            utils::Logs::warning(utils::Logs::initLog(None, "Unknown protocol".to_string(), None));
-            initProtocolData(
-                "PROTOCOL_NOT_EXIST".to_string(),
-                "server".to_string(),
-                "receiver".to_string(),
-                "This protocol doesn't exist".to_string()
-            )
-        },
+    if protocol_data.sender != "server".to_string() {
+
+        return match protocol_data.protocol.as_str() {
+            INIT_CONNECTION => {
+                utils::Logs::debug(logs);
+                initProtocolData(
+                    INIT_CONNECTION.to_string(),
+                    "server".to_string(),
+                    protocol_data.sender,
+                    "CONNECTION OK.".to_string()
+                ) //
+            },
+            REGISTER => {
+                utils::Logs::debug(logs);
+                initProtocolData(
+                    REGISTER.to_string(),
+                    "server".to_string(),
+                    protocol_data.sender,
+                    "REGISTER OK.".to_string()
+                )
+            },
+            LOGIN => {
+                utils::Logs::debug(logs);
+                initProtocolData(
+                    LOGIN.to_string(),
+                    "server".to_string(),
+                    protocol_data.sender,
+                    "LOGIN OK.".to_string()
+                )
+            },
+            SEND => {
+                utils::Logs::debug(logs);
+                initProtocolData(
+                    SEND.to_string(),
+                    "server".to_string(),
+                    protocol_data.sender,
+                    "SEND OK.".to_string()
+                )
+            },
+            RECEIVE => {
+                utils::Logs::debug(logs);
+                initProtocolData(
+                    RECEIVE.to_string(),
+                    "server".to_string(),
+                    protocol_data.sender,
+                    "RECEIVE OK.".to_string()
+                )
+            },
+            _ => {
+                utils::Logs::warning(utils::Logs::initLog(None, "Unknown protocol".to_string(), None));
+                initProtocolData(
+                    "PROTOCOL_NOT_EXIST".to_string(),
+                    "server".to_string(),
+                    "receiver".to_string(),
+                    "This protocol doesn't exist".to_string()
+                )
+            }
+        };
+    } else {
+        initProtocolData(
+            "".to_string(),
+            "".to_string(),
+            "".to_string(),
+            "".to_string()
+        )
     }
 }
 
