@@ -3,6 +3,7 @@ use crate::utils;
 use crate::utils::Logs::UtilsData;
 
 pub const PROTOCOL_DATA_SEP: &str = "::";
+pub const PROTOCOL_NOT_EXIST: &str = "PROTOCOL_NOT_EXIST";
 pub const INIT_CONNECTION: &str = "INIT_CONNECTION";
 pub const REGISTER: &str =  "REGISTER";
 pub const LOGIN: &str = "LOGIN";
