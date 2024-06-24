@@ -14,8 +14,7 @@ fn handler(mut stream: TcpStream) -> std::io::Result<()> {
 
     let mut buffer = [0; 512];
     let user: SocketAddr = stream.local_addr().unwrap();
-    let msgUser: String = format!("{} has connected successfully", user);
-    let logs: UtilsData = utils::Logs::initLog(None, msgUser, None);
+    let logs: UtilsData = utils::Logs::initLog(None, format!("{} has connected successfully", user), None);
     utils::Logs::info(logs);
 
     loop {

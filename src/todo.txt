@@ -1,2 +1,8 @@
-1. Ajouter les vérification des protocols dans le response
+
+========== TO DO ==========
 2. FAIRE LE SENDER POUR ENVOYER LES MERDES DANS CHECKPROTOCOL !!!!
+
+========== IN PROGRESS ==========
+
+========== DONE ==========
+1. Ajouter les vérification des protocols dans le response
