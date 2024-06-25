@@ -58,7 +58,7 @@ pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
                     INIT_CONNECTION.to_string(),
                     "server".to_string(),
                     protocol_data.sender,
-                    "CONNECTION OK.".to_string()
+                    "CONNECTION OK".to_string()
                 ) //
             },
             REGISTER => {
@@ -67,7 +67,7 @@ pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
                     REGISTER.to_string(),
                     "server".to_string(),
                     protocol_data.sender,
-                    "REGISTER OK.".to_string()
+                    "REGISTER OK".to_string()
                 )
             },
             LOGIN => {
@@ -76,16 +76,16 @@ pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
                     LOGIN.to_string(),
                     "server".to_string(),
                     protocol_data.sender,
-                    "LOGIN OK.".to_string()
+                    "LOGIN OK".to_string()
                 )
             },
             SEND => {
                 utils::Logs::debug(logs);
                 initProtocolData(
                     SEND.to_string(),
-                    "server".to_string(),
+                    protocol_data.receiver,
                     protocol_data.sender,
-                    "SEND OK.".to_string()
+                    "SEND OK".to_string()
                 )
             },
             RECEIVE => {
@@ -94,7 +94,7 @@ pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
                     RECEIVE.to_string(),
                     "server".to_string(),
                     protocol_data.sender,
-                    "RECEIVE OK.".to_string()
+                    "RECEIVE OK".to_string()
                 )
             },
             _ => {

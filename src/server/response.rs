@@ -28,14 +28,46 @@ impl responseData {
 
 pub fn initResponseData(protocol_data: protocolData) -> responseData {
     let t0: Instant = Instant::now();
-    let protocol: protocolData= checkProtocol(protocol_data);
+    //  let protocol: protocolData = checkProtocol(protocol_data);
 
     // CHECK TO-DO 1
 
-    match protocol.protocol.as_str() {
+    match protocol_data.protocol.as_str() {
         crate::server::protocols::INIT_CONNECTION => {
             let response = responseData {
-                protocolData: protocol,
+                protocolData: protocol_data,
+                timeUTC: Utc::now(),
+                responseTime: t0.elapsed().as_millis() as u16
+            };
+            return response;
+        }
+        crate::server::protocols::REGISTER => {
+            let response = responseData {
+                protocolData: protocol_data,
+                timeUTC: Utc::now(),
+                responseTime: t0.elapsed().as_millis() as u16
+            };
+            return response;
+        }
+        crate::server::protocols::LOGIN => {
+            let response = responseData {
+                protocolData: protocol_data,
+                timeUTC: Utc::now(),
+                responseTime: t0.elapsed().as_millis() as u16
+            };
+            return response;
+        }
+        crate::server::protocols::SEND => {
+            let response = responseData {
+                protocolData: protocol_data,
+                timeUTC: Utc::now(),
+                responseTime: t0.elapsed().as_millis() as u16
+            };
+            return response;
+        }
+        crate::server::protocols::RECEIVE => {
+            let response = responseData {
+                protocolData: protocol_data,
                 timeUTC: Utc::now(),
                 responseTime: t0.elapsed().as_millis() as u16
             };

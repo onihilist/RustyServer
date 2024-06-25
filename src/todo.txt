@@ -1,6 +1,7 @@
 
 ========== TO DO ==========
 2. FAIRE LE SENDER POUR ENVOYER LES MERDES DANS CHECKPROTOCOL !!!!
+3. Fix le problème du nom du sender quand on receive un message
 
 ========== IN PROGRESS ==========
 
