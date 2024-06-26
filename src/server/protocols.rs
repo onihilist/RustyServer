@@ -98,7 +98,7 @@ pub fn checkProtocol(protocol_data: protocolData) -> protocolData {
                 )
             },
             _ => {
-                utils::Logs::warning(utils::Logs::initLog(None, "Unknown protocol".to_string(), None));
+                utils::Logs::warning(utils::Logs::initLog(None, format!("Unknown protocol ( {} )", protocol_data.protocol), None));
                 initProtocolData(
                     "PROTOCOL_NOT_EXIST".to_string(),
                     "server".to_string(),
