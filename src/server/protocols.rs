@@ -128,19 +128,8 @@ pub fn createProtocol(request: String) -> protocolData {
     return newProtocol;
 }
 
-pub fn protocolParser(packet: protocolData) -> String {
-    let splitter: String = "::".to_string();
-    let request = format!(
-        "{}{}{}{}{}{}{}",
-        packet.protocol,
-        splitter,
-        packet.sender,
-        splitter,
-        packet.receiver,
-        splitter,
-        packet.data
-    );
-    return request;
+pub fn dataParser(data: &str) -> Vec<String> {
+    data.split("#").map(|s| s.to_string()).collect()
 }
 
 pub fn concatenate_slices<'a>(separator: &[u8], slice1: &'a [u8], slice2: &'a [u8], slice3: &'a [u8], slice4: &'a [u8]) -> &'a [u8] {

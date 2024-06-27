@@ -1,7 +1,6 @@
 use crate::server::protocols::{
     protocolData,
     initProtocolData,
-    checkProtocol
 };
 use chrono::{
     DateTime,
