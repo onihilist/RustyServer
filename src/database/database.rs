@@ -1,35 +1,74 @@
+use std::panic::resume_unwind;
+use crate::config::configData;
 use tokio_postgres::{NoTls, Row};
-use std::env;
+use crate::server::users::userData;
 use crate::utils;
 
-pub async fn connect_to_db() -> Result<tokio_postgres::Client, tokio_postgres::Error> {
+pub async fn connectToDB() -> Result<tokio_postgres::Client, tokio_postgres::Error> {
 
     let config: configData = configData::new();
 
-    let host = env::var("HOST").unwrap();
-    let port: u16 = env::var("PORT").expect("PORT must be set").parse().expect("PORT must be a number");
-    let username = env::var("USERNAME").expect("USERNAME must be set");
-    let password = env::var("PASSWORD").expect("PASSWORD must be set");
-    let database = env::var("DATABASE").expect("DATABASE must be set");
+    let connection_string = format!("host={} port={} user={} password={}", // dbname={}",
+                                    config.host.trim(),
+                                    config.port,
+                                    config.username.trim(),
+                                    config.password.trim()/*,
+                                    config.database.trim()*/);
 
-    let (client, connection) =
-        tokio_postgres::connect(format!("host={} port={} user={} password={} dbname={}", host, port, username, password, database).as_str(), NoTls)
-            .await?;
-
-    tokio::spawn(async move {
-        if let Err(e) = connection.await {
-            let logs = utils::Logs::initLog(None, format!("Impossible to connect to the database : {}", e), None);
-            utils::Logs::error(logs);
+    match tokio_postgres::connect(&connection_string, NoTls).await {
+        Ok((client, connection)) => {
+            tokio::spawn(async move {
+                if let Err(e) = connection.await {
+                    let logs = utils::Logs::initLog(None, format!("Impossible to connect to the database : {}", e), None);
+                    utils::Logs::error(logs);
+                }
+            });
+            let logs = utils::Logs::initLog(None, format!("Connected to the database ({}:{})", config.host.trim(), config.port), None);
+            utils::Logs::success(logs);
+            Ok(client)
         }
-    });
-
-    Ok(client)
+        Err(e) => {
+            let error_message = format!("Impossible to connect to the database : {}", e);
+            let logs = utils::Logs::initLog(None, error_message, None);
+            utils::Logs::error(logs);
+            Err(e)
+        }
+    }
 }
 
-async fn execute_query(client: &tokio_postgres::Client, query: &str, params: Vec<&(dyn tokio_postgres::types::ToSql + Sync)>) -> Result<Vec<Row>, tokio_postgres::Error> {
+async fn executeQuery(client: tokio_postgres::Client, query: &str, params: Vec<&(dyn tokio_postgres::types::ToSql + Sync)>) -> Result<Vec<Row>, tokio_postgres::Error> {
     client.query(query, &params).await
 }
+
 /*
+pub async fn dumpAll(client: tokio_postgres::Client, params: Vec<&(dyn tokio_postgres::types::ToSql + Sync)>) -> Vec<userData> {
+    let rows = executeQuery(client, "SELECT * FROM users;", vec![]).await.unwrap();
+    let mut users = Vec::new();
+    for row in rows {
+        let userId: i32 = row.get(0);
+        let hwid: String = match row.get(1) {
+            Some(hwid) => hwid.unwrap().to_string(),
+            None => "Unknown HWID".to_string(),
+        };
+        let username: String = match row.get(2) {
+            Some(username) => username.unwrap().to_string(),
+            None => "Unknown username".to_string(),
+        };
+        let pass: String = match row.get(3) {
+            Some(pass) => pass.unwrap().to_string(),
+            None => "Unknown password".to_string(),
+        };
+        let user = userData {
+            userId,
+            hwid,
+            username,
+            pass,
+        };
+        users.push(user);
+    }
+    users
+}
+
 pub async fn createAccount(client: &tokio_postgres::Client, request: protocolData, params: Vec<&(dyn tokio_postgres::types::ToSql + Sync)>) -> Vec<Row> {
     execute_query(client,
                   "INSERT INTO users (hwid, username, pass, creationDate) VALUES ($1, $2, $3, $4);",
@@ -41,8 +80,3 @@ pub async fn createAccount(client: &tokio_postgres::Client, request: protocolDat
                   ]).await.unwrap()
 }
 */
-pub async fn dumpAll(client: &tokio_postgres::Client, params: Vec<&(dyn tokio_postgres::types::ToSql + Sync)>) -> Vec<Row> {
-    execute_query(client,
-                  "SELECT * FROM users;",
-                  vec![]).await.unwrap()
-}

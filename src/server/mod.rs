@@ -1,6 +1,7 @@
 
 pub mod protocols;
 pub mod response;
+pub mod users;
 
 use std::io;
 use std::io::{Read, Write};
@@ -39,19 +40,28 @@ fn handler(mut stream: TcpStream) -> std::io::Result<()> {
 }
 
 pub async fn startServer() -> std::io::Result<()> {
+
     let logs: UtilsData = utils::Logs::initLog(None, "Server is starting...".to_string(), None);
     utils::Logs::info(logs);
+
     let addr: IpAddr = IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0));
     let port: u16 = 42000;
+
+    let logs: UtilsData = utils::Logs::initLog(None, "Trying to connected with database...".to_string(), None);
+    utils::Logs::info(logs);
+
+    let clientDB = database::database::connectToDB().await.unwrap();
+    /*let result = database::database::dumpAll(clientDB, vec![]).await;
+    println!("{:?}", result);*/
+
     let socket_addr = SocketAddr::from(SocketAddr::new(addr, port));
     let listener: TcpListener = TcpListener::bind(socket_addr)?;
+
     let logs: UtilsData = utils::Logs::initLog(None, "Server has successfully started !".to_string(), None);
     utils::Logs::success(logs);
+
     let logs: UtilsData = utils::Logs::initLog(None, "Listening for a connection...".to_string(), None);
     utils::Logs::info(logs);
-    let clientDB = database::database::connect_to_db().await.unwrap();
-    let result = database::database::dumpAll(&clientDB, vec![]).await;
-    dbg!(result);
 
     for stream in listener.incoming() {
         handler(stream?);

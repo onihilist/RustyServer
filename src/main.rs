@@ -3,8 +3,7 @@ mod server;
 mod database;
 mod config;
 
-use futures::executor::block_on;
-
-fn main() {
-    block_on(server::startServer());
+#[tokio::main]
+async fn main() {
+    server::startServer().await.unwrap();
 }
