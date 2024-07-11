@@ -1,19 +1,21 @@
 use std::panic::resume_unwind;
-use crate::config::configData;
+use crate::config::{configToml, configTomlDatabase};
 use tokio_postgres::{NoTls, Row};
 use crate::server::users::userData;
 use crate::utils;
 
+const CONFIG: configToml = configToml::new();
+
 pub async fn connectToDB() -> Result<tokio_postgres::Client, tokio_postgres::Error> {
 
-    let config: configData = configData::new();
+    let db: configTomlDatabase = CONFIG.database.unwrap();
 
     let connection_string = format!("host={} port={} user={} password={}", // dbname={}",
-                                    config.host.trim(),
-                                    config.port,
-                                    config.username.trim(),
-                                    config.password.trim()/*,
-                                    config.database.trim()*/);
+                                    db.host,
+                                    db.port,
+                                    db.username.trim(),
+                                    db.password.trim(),
+                                    );
 
     match tokio_postgres::connect(&connection_string, NoTls).await {
         Ok((client, connection)) => {
@@ -23,7 +25,7 @@ pub async fn connectToDB() -> Result<tokio_postgres::Client, tokio_postgres::Err
                     utils::Logs::error(logs);
                 }
             });
-            let logs = utils::Logs::initLog(None, format!("Connected to the database ({}:{})", config.host.trim(), config.port), None);
+            let logs = utils::Logs::initLog(None, format!("Connected to the database ({}:{})", db.host, db.port), None);
             utils::Logs::success(logs);
             Ok(client)
         }

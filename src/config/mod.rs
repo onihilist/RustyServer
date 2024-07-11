@@ -7,17 +7,18 @@ use std::env;
 use crate::utils::Logs::UtilsData;
 
 #[derive(Serialize, Deserialize, Debug)]
-struct configToml {
-    database: Option<configTomlDatabase>
+pub(crate) struct configToml {
+    pub database: Option<configTomlDatabase>,
+    pub server: Option<configTomlServer>
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct configTomlDatabase {
-    host: String,
-    port: u16,
-    username: String,
-    password: String,
-    database: String
+pub struct configTomlDatabase {
+    pub host: String,
+    pub port: u16,
+    pub username: String,
+    pub password: String,
+    pub database: String
 }
 
 #[derive(Debug)]
@@ -29,7 +30,20 @@ pub struct configData {
     pub database: String
 }
 
-impl configData {
+#[derive(Serialize, Deserialize, Debug)]
+pub struct configTomlServer {
+    pub maxUser: u16,
+    pub timeout: u32
+}
+
+#[derive(Debug)]
+pub struct configServer {
+    pub maxUser: u16,
+    pub timeout: u32
+}
+
+
+impl configToml {
     pub fn new() -> Self {
 
         let mut fp: String = "".to_owned();
@@ -52,7 +66,8 @@ impl configData {
             let logs: UtilsData = utils::Logs::initLog(None, format!("Config file was found : {}", fp), None);
             utils::Logs::info(logs);
             configToml {
-                database: None
+                database: None,
+                server: None,
             }
         });
 
@@ -76,12 +91,32 @@ impl configData {
             )
         };
 
-        configData {
-            host,
-            port,
-            username,
-            password,
-            database,
+        let (maxUser, timeout):
+            (u16, u32) = match configToml.server {
+            Some(server) => {
+                (
+                    server.maxUser,
+                    server.timeout
+                )
+            }
+            None => (
+                10.to_owned(),
+                10000.to_owned(),
+            )
+        };
+
+        configToml {
+            database: Some(configTomlDatabase {
+                        host,
+                        port,
+                        username,
+                        password,
+                        database,
+                        }),
+            server: Some(configTomlServer{
+                maxUser,
+                timeout
+            }),
         }
     }
 }

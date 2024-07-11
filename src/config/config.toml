@@ -4,3 +4,7 @@ port = 5432
 username = "postgres"
 password = "root"
 database = "RustyDB"
+
+[server]
+maxUser = 30
+timeout = 10000 #(ms)
