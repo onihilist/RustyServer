@@ -1,14 +1,14 @@
 use std::panic::resume_unwind;
-use crate::config::{configToml, configTomlDatabase};
+use crate::config::{configToml, configTomlDatabase, configTomlServer};
 use tokio_postgres::{NoTls, Row};
 use crate::server::users::userData;
 use crate::utils;
 
-const CONFIG: configToml = configToml::new();
-
 pub async fn connectToDB() -> Result<tokio_postgres::Client, tokio_postgres::Error> {
 
-    let db: configTomlDatabase = CONFIG.database.unwrap();
+    let db: configTomlDatabase = configToml::new().database.unwrap();
+    //let server: configTomlServer = CONFIG.server.unwrap();
+    //println!("{}", server.maxUser);
 
     let connection_string = format!("host={} port={} user={} password={}", // dbname={}",
                                     db.host,
