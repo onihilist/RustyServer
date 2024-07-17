@@ -21,8 +21,8 @@ jobs:
           - nightly
 
     steps:
-      - run: echo "[📁] - Current project -> $GITHUB_REPOSITORY" >> "$GITHUB_OUTPUT"
-             echo "[🚀] - Project version -> $version" >> "$GITHUB_OUTPUT"
+      - run: echo "[📁] - Current project -> $GITHUB_REPOSITORY" >> "$GITHUB_OUTPUT" &&
+             echo "[🚀] - Project version -> $version" >> "$GITHUB_OUTPUT" &&
              echo "[🧪] - CI Actor -> GITHUB_ACTOR (commit $GITHUB_SHA)"
         env:
           version: 0.1.0
