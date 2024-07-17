@@ -23,7 +23,7 @@ jobs:
     steps:
       - run: echo "[📁] - Current project -> $GITHUB_REPOSITORY" >> "$GITHUB_OUTPUT"
              echo "[🚀] - Project version -> $version" >> "$GITHUB_OUTPUT"
-             echo "[🧪] - CI Actor -> GITHUB_ACTOR (commit ${{GITHUB_SHA}})"
+             echo "[🧪] - CI Actor -> GITHUB_ACTOR (commit $GITHUB_SHA)"
         env:
           version: 0.1.0
       - uses: actions/checkout@v1
@@ -57,5 +57,5 @@ jobs:
       - uses: actions-rs/grcov@v0.1.5
         artifacts:
           paths:
-            - ${{GITHUB_JOB}}-report-${{GITHUB_RUN_ID}}
+            - $GITHUB_JOB-report-$GITHUB_RUN_ID
           expire_in: 7 days
