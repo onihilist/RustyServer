@@ -22,11 +22,10 @@ jobs:
 
     steps:
       - run: |
-          echo "::output name=project::[📁] - Current project -> $GITHUB_REPOSITORY"
-          echo "::output name=project::[📁] - Current project -> $GITHUB_REPOSITORY"
-          echo "::output name=version::[🚀] - Project version -> $version"
-          echo "::output name=ci_actor::[🧪] - CI Actor -> $GITHUB_ACTOR (commit $GITHUB_SHA)"
-          shell: /usr/bin/bash -e {0}
+          echo "::group::[📁] - Current project -> $GITHUB_REPOSITORY"
+          echo "[🚀] - Project version -> $version"
+          echo "[🧪] - CI Actor -> $GITHUB_ACTOR (commit $GITHUB_SHA)"
+          echo "::endgroup::"
         env:
           version: 0.1.0
       - uses: actions/checkout@v1
