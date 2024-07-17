@@ -22,9 +22,9 @@ jobs:
 
     steps:
       - run: |
-             echo "[📁] - Current project -> $GITHUB_REPOSITORY" >> "$GITHUB_OUTPUT"
-             echo "[🚀] - Project version -> $version" >> "$GITHUB_OUTPUT"
-             echo "[🧪] - CI Actor -> GITHUB_ACTOR (commit $GITHUB_SHA)"
+          echo "[📁] - Current project -> $GITHUB_REPOSITORY" >> "$GITHUB_OUTPUT"
+          echo "[🚀] - Project version -> $version" >> "$GITHUB_OUTPUT"
+          echo "[🧪] - CI Actor -> $GITHUB_ACTOR (commit $GITHUB_SHA)" >> "$GITHUB_OUTPUT"
         env:
           version: 0.1.0
       - uses: actions/checkout@v1
