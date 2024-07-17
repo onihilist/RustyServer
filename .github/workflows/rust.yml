@@ -57,5 +57,5 @@ jobs:
       - uses: actions-rs/grcov@v0.1.5
         artifacts:
           paths:
-            - ${{GITHUB_JOB}}-report-${{GITHUB_RUN_ID}}
+            - lintgr-report
           expire_in: 7 days
