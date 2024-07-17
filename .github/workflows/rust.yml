@@ -55,7 +55,8 @@ jobs:
           RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
           RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
       - uses: actions-rs/grcov@v0.1.5
-        artifacts:
-          paths:
-            - lintgr-report
-          expire_in: 7 days
+      - uses: actions/upload-artifact@v2
+        with:
+          name: lint-grcov-${{GITHUB_RUN_ID}}
+          path: artifact/report-${{GITHUB_RUN_ID}}
+          retention-days: 7
