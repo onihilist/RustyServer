@@ -57,6 +57,6 @@ jobs:
       - uses: actions-rs/grcov@v0.1.5
       - uses: actions/upload-artifact@v2
         with:
-          name: lint-grcov-${{GITHUB_RUN_ID}}
-          path: artifact/report-${{GITHUB_RUN_ID}}
+          name: lint-grcov-report
+          path: artifact/report-$GITHUB_RUN_ID
           retention-days: 7
