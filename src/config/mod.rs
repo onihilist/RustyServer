@@ -14,6 +14,7 @@ pub(crate) struct configToml {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct configTomlDatabase {
+    pub typedb: String,
     pub host: String,
     pub port: u16,
     pub username: String,
@@ -23,6 +24,7 @@ pub struct configTomlDatabase {
 
 #[derive(Debug)]
 pub struct configData {
+    pub typedb: String,
     pub host: String,
     pub port: u16,
     pub username: String,
@@ -71,10 +73,11 @@ impl configToml {
             }
         });
 
-        let (host, port, username, password, database):
-            (String, u16, String, String, String) = match configToml.database {
+        let (typedb, host, port, username, password, database):
+            (String, String, u16, String, String, String) = match configToml.database {
             Some(database) => {
                 (
+                    database.typedb,
                     database.host,
                     database.port,
                     database.username,
@@ -83,6 +86,7 @@ impl configToml {
                 )
             }
             None => (
+                "unknown".to_owned(),
                 "unknown".to_owned(),
                 0.to_owned(),
                 "unknown".to_owned(),
@@ -107,6 +111,7 @@ impl configToml {
 
         configToml {
             database: Some(configTomlDatabase {
+                        typedb,
                         host,
                         port,
                         username,

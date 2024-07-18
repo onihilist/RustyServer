@@ -15,25 +15,47 @@ pub async fn connectToDB() -> Result<tokio_postgres::Client, tokio_postgres::Err
                                     db.port,
                                     db.username.trim(),
                                     db.password.trim(),
-                                    );
+    );
 
-    match tokio_postgres::connect(&connection_string, NoTls).await {
-        Ok((client, connection)) => {
-            tokio::spawn(async move {
-                if let Err(e) = connection.await {
-                    let logs = utils::Logs::initLog(None, format!("Impossible to connect to the database : {}", e), None);
-                    utils::Logs::error(logs);
-                }
-            });
-            let logs = utils::Logs::initLog(None, format!("Connected to the database ({}:{})", db.host, db.port), None);
-            utils::Logs::success(logs);
-            Ok(client)
+    if (db.typedb == "postgreSQL") {
+
+        match tokio_postgres::connect(&connection_string, NoTls).await {
+            Ok((client, connection)) => {
+                tokio::spawn(async move {
+                    if let Err(e) = connection.await {
+                        let logs = utils::Logs::initLog(None, format!("Impossible to connect to the database : {}", e), None);
+                        utils::Logs::error(logs);
+                    }
+                });
+                let logs = utils::Logs::initLog(None, format!("Connected to the database ({}:{})", db.host, db.port), None);
+                utils::Logs::success(logs);
+                Ok(client)
+            }
+            Err(e) => {
+                let error_message = format!("Impossible to connect to the database : {}", e);
+                let logs = utils::Logs::initLog(None, error_message, None);
+                utils::Logs::error(logs);
+                Err(e)
+            }
         }
-        Err(e) => {
-            let error_message = format!("Impossible to connect to the database : {}", e);
-            let logs = utils::Logs::initLog(None, error_message, None);
-            utils::Logs::error(logs);
-            Err(e)
+    } else {
+        match tokio_postgres::connect("null", NoTls).await {
+            Ok((client, connection)) => {
+                tokio::spawn(async move {
+                    if let Err(e) = connection.await {
+                        let logs = utils::Logs::initLog(None, format!("Impossible to connect to the database : {}", e), None);
+                        utils::Logs::error(logs);
+                    }
+                });
+                let logs = utils::Logs::initLog(None, format!("Connected to the database ({}:{})", db.host, db.port), None);
+                utils::Logs::success(logs);
+                Ok(client)
+            }
+            Err(e) => {
+                let logs = utils::Logs::initLog(None, format!("Only postgreSQL for the moment, but later MySQL, MariaDB, OracleDB, MongoDB : {}", e), None);
+                utils::Logs::warning(logs);
+                Err(e)
+            }
         }
     }
 }

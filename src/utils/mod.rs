@@ -1,6 +1,9 @@
+mod exception;
+
 use colored::Colorize;
 
 pub mod Logs {
+    use std::fmt;
     use std::fmt::DebugStruct;
     use std::task::Context;
     use colored::Colorize;
