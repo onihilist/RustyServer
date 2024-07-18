@@ -60,5 +60,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: lint-grcov-report
-          path: artifacts/report-lintcov.txt
+          path: ./artifacts/report-lintcov.txt
           retention-days: 7
