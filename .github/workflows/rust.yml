@@ -39,6 +39,7 @@ jobs:
         run: cargo build --verbose
 
   lint-clippy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
