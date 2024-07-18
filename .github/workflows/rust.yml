@@ -40,25 +40,8 @@ jobs:
 
   lint-clippy:
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Rust and Clippy
-        run: |
-          rustup component add clippy
-          cargo clippy
-
-      - name: Run tests
-        run: cargo test
-
-      - name: Build release
-        run: cargo build --release
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: report-lintcov
-          path: ./.github/workflows/artifacts/report-lintcov.txt
+      - uses: actions/checkout@v4
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features
 
