@@ -2,6 +2,7 @@ mod utils;
 mod server;
 mod database;
 mod config;
+mod tests;
 
 use std::env;
 

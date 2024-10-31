@@ -32,9 +32,17 @@ pub async fn connectToDB() -> Result<tokio_postgres::Client, tokio_postgres::Err
                 Ok(client)
             }
             Err(e) => {
-                let error_message = format!("Impossible to connect to the database : {}", e);
-                let logs = utils::Logs::initLog(None, error_message, None);
+                let mut logs = utils::Logs::initLog(
+                    None,
+                    format!("Impossible to connect to the database : {}", e),
+                    None
+                );
                 utils::Logs::error(logs);
+                logs = utils::Logs::initLog(
+                    None,
+                    format!("The server can run without the database, but all the informations will be not saved !"),
+                    None);
+                utils::Logs::warning(logs);
                 Err(e)
             }
         }
