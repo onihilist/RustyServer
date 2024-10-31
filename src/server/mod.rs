@@ -50,9 +50,7 @@ pub async fn startServer() -> std::io::Result<()> {
     let logs: UtilsData = utils::Logs::initLog(None, "Trying to connected with database...".to_string(), None);
     utils::Logs::info(logs);
 
-    let clientDB = database::database::connectToDB().await.unwrap();
-    /*let result = database::database::dumpAll(clientDB, vec![]).await;
-    println!("{:?}", result);*/
+    database::database::connectToDB().await;
 
     let socket_addr = SocketAddr::from(SocketAddr::new(addr, port));
     let listener: TcpListener = TcpListener::bind(socket_addr)?;
